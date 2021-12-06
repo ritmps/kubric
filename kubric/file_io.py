@@ -234,7 +234,7 @@ def multi_write_image(data: np.ndarray, path_template: str, write_fn=write_png,
     **kwargs: additional kwargs to pass to the write_fn.
   """
   # Pre-load image libs to avoid race-condition in multi-thread.
-  imageio.plugins.tifffile.load_lib()
+  # imageio.plugins.tifffile.load_lib()
   num_threads = min(data.shape[0], max_write_threads)
   with multiprocessing.pool.ThreadPool(num_threads) as pool:
     args = [(img, path_template.format(i)) for i, img in enumerate(data)]

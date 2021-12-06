@@ -4,7 +4,7 @@
   "name": "Kubric",
   
   // --- loads from pre-built container
-  "image": "docker.io/kubricdockerhub/kubruntudev:latest",
+  "image": "docker.io/flipphillips/kubruntudev:latest",
 
   // --- builds container (extremely slow... 2h built time!)
   // "build": {

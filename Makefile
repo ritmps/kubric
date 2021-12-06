@@ -13,7 +13,7 @@ checkmakeversion:
 
 # --- Blender (preinstalled blender)
 blender: docker/Blender.Dockerfile
-	docker build -f docker/Blender.Dockerfile -t kubricdockerhub/blender:latest .
+	docker build -f docker/Blender.Dockerfile -t flipphillips/blender:latest .
 
 # --- Keeps dist/*.wheel file up to date
 dist: setup.py $(shell find ./kubric -name "*.py")
@@ -21,18 +21,18 @@ dist: setup.py $(shell find ./kubric -name "*.py")
 
 # --- Kubruntu (preinstalled blender+kubric)
 kubruntu: dist docker/Kubruntu.Dockerfile
-	docker build -f docker/Kubruntu.Dockerfile -t kubricdockerhub/kubruntu:latest .
+	docker build -f docker/Kubruntu.Dockerfile -t flipphillips/kubruntu:latest .
 kubruntudev: docker/KubruntuDev.Dockerfile
-	docker build -f docker/KubruntuDev.Dockerfile -t kubricdockerhub/kubruntudev:latest .
+	docker build -f docker/KubruntuDev.Dockerfile -t flipphillips/kubruntudev:latest .
 
-# --- Publish to (public) Docker Hub (needs authentication w/ user "kubricdockerhub")
+# --- Publish to (public) Docker Hub (needs authentication w/ user "flipphillips")
 # WARNING: these pushes are done automatically by Github Actions upon push to the main branch.
 blender/push: blender
-	docker push kubricdockerhub/blender:latest
+	docker push flipphillips/blender:latest
 kubruntu/push: kubruntu
-	docker push kubricdockerhub/kubruntu:latest
+	docker push flipphillips/kubruntu:latest
 kubruntudev/push: kubruntudev
-	docker push kubricdockerhub/kubruntudev:latest
+	docker push flipphillips/kubruntudev:latest
 
 # --- documentation (requires "apt-get install python3-sphinx")
 docs: $(shell find docs )
@@ -46,15 +46,15 @@ docs_server:
 examples/basic: checkmakeversion
 	python3 examples/basic.py
 examples/helloworld: checkmakeversion
-	docker run --rm --interactive --user `id -u`:`id -g` --volume `pwd`:/kubric kubricdockerhub/kubruntudev python3 examples/helloworld.py
+	docker run --rm --interactive --user `id -u`:`id -g` --volume `pwd`:/kubric flipphillips/kubruntudev python3 examples/helloworld.py
 examples/simulator: checkmakeversion
-	docker run --rm --interactive --user `id -u`:`id -g` --volume `pwd`:/kubric kubricdockerhub/kubruntudev python3 examples/simulator.py
+	docker run --rm --interactive --user `id -u`:`id -g` --volume `pwd`:/kubric flipphillips/kubruntudev python3 examples/simulator.py
 examples/klevr: checkmakeversion
-	docker run --rm --interactive --user `id -u`:`id -g` --volume `pwd`:/kubric kubricdockerhub/kubruntudev python3 examples/klevr.py
+	docker run --rm --interactive --user `id -u`:`id -g` --volume `pwd`:/kubric flipphillips/kubruntudev python3 examples/klevr.py
 examples/katr: checkmakeversion
-	docker run --rm --interactive --user `id -u`:`id -g` --volume `pwd`:/kubric kubricdockerhub/kubruntudev python3 examples/katr.py
+	docker run --rm --interactive --user `id -u`:`id -g` --volume `pwd`:/kubric flipphillips/kubruntudev python3 examples/katr.py
 examples/shapenet: checkmakeversion
-	docker run --rm --interactive --user `id -u`:`id -g` --volume `pwd`:/kubric kubricdockerhub/kubruntudev python3 examples/shapenet.py
+	docker run --rm --interactive --user `id -u`:`id -g` --volume `pwd`:/kubric flipphillips/kubruntudev python3 examples/shapenet.py
 
 # --- runs the test suite within the dev container (similar to test.yml), e.g.
 # USAGE:
@@ -62,15 +62,15 @@ examples/shapenet: checkmakeversion
 # 	make pytest TEST=test/test_core.py::test_asset_name_readonly
 pytest: checkmakeversion
 	@TARGET=$${TARGET:-test/}
-	echo "pytest (kubricdockerhub/kubruntudev) on folder" $${TARGET}
-	docker run --rm --interactive --volume `pwd`:/kubric kubricdockerhub/kubruntudev pytest --disable-warnings --exitfirst $${TARGET}
+	echo "pytest (flipphillips/kubruntudev) on folder" $${TARGET}
+	docker run --rm --interactive --volume `pwd`:/kubric flipphillips/kubruntudev pytest --disable-warnings --exitfirst $${TARGET}
 
 # --- runs pylint on the entire "kubric/" subfolder
 # To run with options, e.g. `make pylint TARGET=./kubric/core`
 pylint: checkmakeversion
 	@TARGET=$${TARGET:-kubric/}
-	echo "running kubricdockerhub/kubruntudev pylint on" $${TARGET}
-	docker run --rm --interactive --volume  `pwd`:/kubric kubricdockerhub/kubruntudev pylint --rcfile=.pylintrc $${TARGET}
+	echo "running flipphillips/kubruntudev pylint on" $${TARGET}
+	docker run --rm --interactive --volume  `pwd`:/kubric flipphillips/kubruntudev pylint --rcfile=.pylintrc $${TARGET}
 
 # --- manually publishes the package to pypi
 pypi_test/write: clean_build

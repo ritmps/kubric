@@ -17,6 +17,9 @@
 
 import logging
 
+import sys
+sys.path.append('/workspaces/kubric')
+
 import kubric as kb
 from kubric.simulator import PyBullet
 from kubric.renderer import Blender
@@ -72,7 +75,8 @@ west_wall = kb.Cube(scale=(0.9, 1, 1), position=(-1.9, 0, 0.9),
 scene.add([floor, north_wall, south_wall, east_wall, west_wall])
 
 # --- Camera
-scene.camera = kb.OrthographicCamera(position=(0, 0, 3), orthographic_scale=2.2)
+## scene.camera = kb.OrthographicCamera(position=(0, 0, 3), orthographic_scale=2.2)
+scene.camera = kb.PerspectiveCamera(position=(2, -0.5, 4), look_at=(0, 0, 0))
 
 # --- Balls
 nr_objects = rng.randint(FLAGS.min_nr_balls, FLAGS.max_nr_balls+1)
