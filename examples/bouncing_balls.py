@@ -39,7 +39,7 @@ parser.add_argument("--color", type=str, default="uniform_hsv")
 
 parser.add_argument("--no_save_state", dest="save_state", action="store_false")
 parser.add_argument("--save_state", dest="save_state", action="store_true")
-parser.set_defaults(save_state=True, frame_end=24, frame_rate=12, width=128, height=128)
+parser.set_defaults(save_state=True, frame_end=240, frame_rate=12, width=1280, height=1280)
 FLAGS = parser.parse_args()
 
 # --- Common setups & resources
@@ -76,7 +76,7 @@ scene.add([floor, north_wall, south_wall, east_wall, west_wall])
 
 # --- Camera
 ## scene.camera = kb.OrthographicCamera(position=(0, 0, 3), orthographic_scale=2.2)
-scene.camera = kb.PerspectiveCamera(position=(2, -0.5, 4), look_at=(0, 0, 0))
+scene.camera = kb.PerspectiveCamera(position=(0, 0, 4), look_at=(0, 0, 0))
 
 # --- Balls
 nr_objects = rng.randint(FLAGS.min_nr_balls, FLAGS.max_nr_balls+1)
