@@ -15,6 +15,9 @@
 
 # TODO(klausg): this should become the "post-processing" example that shows GIFs in matplotlib? 
 
+import sys
+print(sys.path)
+
 import logging
 import kubric as kb
 

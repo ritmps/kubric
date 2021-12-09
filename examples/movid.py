@@ -88,6 +88,8 @@ MOVid-E
   --min_num_static_objects=10 --max_num_static_objects=20
   --save_state=False
 """
+import sys
+sys.path.append('/workspaces/kubric')
 
 import logging
 

@@ -41,4 +41,4 @@ RUN rm -f requirements_docs.txt
 ENV TF_CPP_MIN_LOG_LEVEL="3"
 
 # --- allows "import kubric" w/o install
-ENV PYTHONPATH="/kubric"
+ENV PYTHONPATH="/kubric/kubric:/kubric"

@@ -7,7 +7,7 @@
 #   kubricdockerhub/kubruntu:latest \
 #   python3 examples/helloworld.py
 
-FROM kubricdockerhub/blender:latest
+FROM flipphillips/blender:latest
 
 WORKDIR /kubric
 
@@ -31,3 +31,6 @@ ENV TF_CPP_MIN_LOG_LEVEL="3"
 COPY dist/kubric*.whl .
 RUN pip3 install `ls kubric*.whl`
 RUN rm -f kubric*.whl
+
+# add to path
+ENV PYTHONPATH="${PYTHONPATH}:${WORKDIR}/kubric"
