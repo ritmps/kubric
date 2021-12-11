@@ -22,7 +22,7 @@ logging.basicConfig(level="INFO")  # < CRITICAL, ERROR, WARNING, INFO, DEBUG
 
 # --- create scene and attach a renderer and simulator
 scene = kb.Scene(resolution=(512, 512))
-scene.frame_end = 120   # < numbers of frames to render
+scene.frame_end = 240   # < numbers of frames to render
 scene.frame_rate = 24  # < rendering framerate
 scene.step_rate = 240  # < simulation framerate
 renderer = KubricBlender(scene)
@@ -31,12 +31,12 @@ simulator = KubricSimulator(scene)
 # --- populate the scene with objects, lights, cameras
 scene += kb.Cube(name="floor", scale=(3, 3, 0.1), position=(0, 0, -0.1), static=True, background=True)
 scene += kb.DirectionalLight(name="sun", position=(-1, -0.5, 3), look_at=(0, 0, 0), intensity=1.5)
-scene.camera = kb.PerspectiveCamera(name="camera", position=(2, -0.5, 4), look_at=(0, 0, 0))
+scene.camera = kb.PerspectiveCamera(name="camera", look_at=(2, -0.5, 4), position=(0, 0, 0))
 
 # --- generates spheres randomly within a spawn region
-spawn_region = [[-1, -1, 0], [1, 1, 5]]
+spawn_region = [[-1, -1, 0], [1, 1, 4]]
 rng = np.random.default_rng()
-for i in range(8):
+for i in range(100):
   velocity = rng.uniform([-1, -1, 0], [1, 1, 0])
   material = kb.PrincipledBSDFMaterial(color=kb.random_hue_color(rng=rng))
   sphere = kb.Sphere(scale=0.1, velocity=velocity, material=material)

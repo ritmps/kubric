@@ -17,3 +17,4 @@ shapenet2kubric/shapenet2kubric.log
 examples/KuBasic/Cone/*
 Dockerfile
 .vscode/*.log
+output_mss/*
