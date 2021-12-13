@@ -3,25 +3,50 @@
 import logging
 import numpy as np
 import kubric as kb
-from kubric.renderer.blender import Blender as KubricBlender
-from kubric.core import traits as ktl
+from kubric.simulator import PyBullet
+from kubric.renderer import Blender
 
 logging.basicConfig(level="INFO")  # < CRITICAL, ERROR, WARNING, INFO, DEBUG
 
+# arguments
+
+CAMERA_RANGE = [[-10, -10, 1], [10, 10, 3]]
+
+parser = kb.ArgumentParser()
+# Configuration for the camera
+parser.add_argument("--camera", choices=["clevr", "katr", "random", "linear_movement"], default="clevr")
+parser.add_argument("--max_camera_movement", type=float, default=4.0)
+
+parser.add_argument("--no_save_state", dest="save_state", action="store_false")
+parser.add_argument("--save_state", dest="save_state", action="store_true")
+parser.set_defaults(save_state=True, frame_end=24, frame_rate=12, width=512, height=512)
+FLAGS = parser.parse_args()
+
+
 # --- create scene and attach a renderer and simulator
-scene = kb.Scene(resolution=(512, 512))
-scene.frame_end = 2   # < numbers of frames to render
-scene.frame_rate = 24  # < rendering framerate
-# scene.step_rate = 240  # < simulation framerate
-renderer = KubricBlender(scene)
+scene, rng, output_dir, scratch_dir = kb.setup(FLAGS)
+simulator = PyBullet(scene, scratch_dir)
+renderer = Blender(scene, scratch_dir, use_denoising=True, adaptive_sampling=False)
+
+logging.info("Creating a large gray ceiling...")
 
 # --- populate the scene with objects, lights, cameras
 # units = meters for now
 
 # ceiling
-material = kb.FlatMaterial()
-scene += kb.Cube(name="ceiling", scale=(7.5, 12.5, 0.01), position=(0, 0, 7.5))
-scene += kb.DirectionalLight(name="sun", position=(0, 0, 0), look_at=(0, 0, 5), intensity=0.05)
+ceiling_material = kb.PrincipledBSDFMaterial(color=kb.Color.from_name("gray"),
+                                           roughness=1., specular=0.)
+scene += kb.Cube(name="ceiling", scale=(7.5, 12.5, 0.01), position=(0, 0, 7.5),
+                  material=ceiling_material, 
+                # friction=1.0, restitution=0,
+                  static=True, background=True)
+
+scene_metadata = {}
+dome = kb.assets.utils.add_hdri_dome(hdri_source, scene, background_hdri)
+renderer._set_ambient_light_hdri(background_hdri.filename)
+scene_metadata["background"] = kb.as_path(background_hdri.filename).stem
+
+# scene += kb.DirectionalLight(name="sun", position=(0, 0, 0), look_at=(0, 0, 5), intensity=0.05)
 scene.camera = kb.PerspectiveCamera(name="camera", look_at=(0, 0, 7.5), position=(0, 0, 0), focal_length=8)
 
 # emitter grid

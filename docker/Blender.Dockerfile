@@ -47,9 +47,9 @@ RUN update-alternatives --install /usr/bin/python python /usr/bin/python3.9 10 &
 # RUN git clone https://git.blender.org/blender.git
 RUN git clone https://github.com/blender/blender.git --branch blender-v2.93-release --depth 1
 
-RUN mkdir lib && \
-    cd lib && \
-    svn checkout https://svn.blender.org/svnroot/bf-blender/trunk/lib/linux_centos7_x86_64
+# RUN mkdir lib && \
+#     cd lib && \
+#     svn checkout https://svn.blender.org/svnroot/bf-blender/trunk/lib/linux_centos7_x86_64
 
 RUN cd blender && \
     make update
@@ -83,6 +83,8 @@ RUN apt-get update --yes --fix-missing && \
       python3.9-dev \
       python3.9-distutils \
       build-essential \
+      libjpeg \
+      libtiff \
       # for GIF creation
       imagemagick \
       # OpenEXR
@@ -121,4 +123,4 @@ RUN curl https://bootstrap.pypa.io/get-pip.py -o get-pip.py && \
 
 # install bpy module within python3.9 
 COPY --from=build /blenderpy/build_linux_bpy/bin/bpy.so /usr/local/lib/python3.9/dist-packages/
-COPY --from=build /blenderpy/lib/linux_centos7_x86_64/python/lib/python3.9/site-packages/2.93 /usr/local/lib/python3.9/dist-packages/2.93
+# COPY --from=build /blenderpy/lib/linux_centos7_x86_64/python/lib/python3.9/site-packages/2.93 /usr/local/lib/python3.9/dist-packages/2.93
