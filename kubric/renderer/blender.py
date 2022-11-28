@@ -26,7 +26,6 @@ from kubric.safeimport.bpy import bpy
 
 import numpy as np
 import tensorflow as tf
-import tensorflow_datasets.public_api as tfds
 from singledispatchmethod import singledispatchmethod
 
 import kubric as kb
@@ -157,7 +156,9 @@ class Blender(core.View):
   @use_denoising.setter
   def use_denoising(self, value: bool):
     self.blender_scene.cycles.use_denoising = value
-    self.blender_scene.cycles.denoiser = "NLM"
+    if bpy.app.version < (3, 0, 0):
+      # NLM is removed since Blender 3. TODO: check if denoising still works
+      self.blender_scene.cycles.denoiser = "NLM"
 
   @property
   def samples_per_pixel(self) -> int:
@@ -473,6 +474,24 @@ class Blender(core.View):
     obj.observe(AttributeSetter(sun, "energy"), "intensity")
     obj.observe(KeyframeSetter(sun, "energy"), "intensity", type="keyframe")
     return sun_obj
+
+  #@add_asset.register(core.SpotLight) # I think these are needed... ~MrX
+  #@blender_utils.prepare_blender_object
+  def _add_asset(self, obj: core.SpotLight):  # pylint: disable=function-redefined
+    spotlight = bpy.data.lights.new(obj.uid, "SPOT")
+    spotlight_obj = bpy.data.objects.new(obj.uid, core.SpotLight)
+
+    register_object3d_setters(obj, spotlight_obj)
+    obj.observe(AttributeSetter(spotlight, "color"), "color")
+    obj.observe(KeyframeSetter(spotlight, "color"), "color", type="keyframe")
+    obj.observe(AttributeSetter(spotlight, "energy"), "intensity")
+    obj.observe(KeyframeSetter(spotlight, "energy"), "intensity", type="keyframe")
+    obj.observe(AttributeSetter(spotlight, "spot_blend"), "spot_blend")
+    obj.observe(KeyframeSetter(spotlight, "spot_blend"), "spot_blend", type="keyframe")
+    obj.observe(AttributeSetter(spotlight, "spot_size"), "spot_size")
+    obj.observe(KeyframeSetter(spotlight, "spot_size"), "spot_size", type="keyframe")
+    return spotlight_obj
+
 
   @add_asset.register(core.RectAreaLight)
   @blender_utils.prepare_blender_object

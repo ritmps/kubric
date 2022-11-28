@@ -18,3 +18,5 @@ examples/KuBasic/Cone/*
 Dockerfile
 .vscode/*.log
 output_mss/*
+
+output_tmp/*
